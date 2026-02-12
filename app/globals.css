@@ -19,8 +19,49 @@
   }
 }
 
+html {
+  overflow-x: hidden;
+  height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Shorts-style scroll: smooth snap + touch */
+.shorts-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+.shorts-snap-item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* YouTube player full-screen: container and iframe fill space */
+.yt-player-full iframe {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Reveal list container */
+.player-reveal-list {
+  min-height: 0;
+}
+
+/* Up next list: scrollable with smooth touch */
+.up-next-list {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }

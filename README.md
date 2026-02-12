@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dino Ventures – Video Player App
 
-## Getting Started
+A mobile-first video player application with a YouTube-style experience: scrollable feed, full-page player with custom controls, in-player related list, and drag-to-minimize mini-player.
 
-First, run the development server:
+## Setup
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build & Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+Deploy to Vercel, Netlify, or Cloudflare by connecting the repo; the build uses standard Next.js output.
 
-To learn more about Next.js, take a look at the following resources:
+## Feature List
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Home Page – Video Feed
+- **Layout:** Scrollable list of videos grouped by category (Social Media AI, AI Income, AI Essentials).
+- **Video cards:** Thumbnail, title, duration badge (5:00), category badge.
+- **Interactions:** Tap a card to open the full-page player. Category chips filter the feed.
+- **Tech:** Next.js (React), TypeScript, Tailwind CSS.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Full-Page Video Player
+- **Playback:** Auto-play on open (YouTube embed with `autoplay=1`).
+- **Custom controls:**
+  - Play / Pause
+  - Skip backward (−10 s) and forward (+10 s)
+  - Seekable progress bar
+  - Current time / total duration (e.g. `1:23 / 5:00`)
+- **Responsiveness:** Works on mobile and desktop; narrow column (max 420px) for a Shorts-like layout.
+- **Format:** YouTube (embed); structure supports MP4 with native `<video>` and same controls.
 
-## Deploy on Vercel
+### 3. In-Player Video List
+- **Reveal:** “Up next · Same category” section at the bottom; tap to expand/collapse the list.
+- **Filtering:** Only videos from the current video’s category.
+- **Selection:** Tap a video to switch playback to it immediately and auto-play; list updates when category changes.
+- **UX:** Smooth expand/collapse and scroll inside the list.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Drag-to-Minimize (Picture-in-App)
+- **Gesture:** Drag the player header downward to minimize.
+- **Docking:** Player shrinks into a bottom mini-player bar (video preview, title, play/pause, close).
+- **Mini-player:** Small video preview (playback continues), title, play/pause, close button.
+- **Persistence:** Mini-player stays visible while browsing the home feed; feed gets bottom padding so it stays scrollable.
+- **Restore:** Tap the mini-player bar to return to full-screen.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+app/
+  layout.tsx
+  page.tsx          # Home feed + player overlay
+  providers.tsx     # Player context wrapper
+  globals.css
+components/
+  FullPagePlayer.tsx   # Full + mini player, controls, related list, drag
+  PlayerControls.tsx   # Play/pause, ±10s, progress bar, time
+  VideoFeed.tsx
+  VideoPlayer.tsx
+store/
+  playerStore.tsx   # Global player state (current video, category, mode)
+data/
+  videos.json       # Dataset (categories + contents)
+  videos.ts         # Types + export
+utils/
+  formatTime.ts     # mm:ss formatting, YouTube ID from URL
+next.config.ts      # Image domains for thumbnails
+```
+
+## Dataset
+
+Videos and categories are defined in `data/videos.json`. Each item has `title`, `mediaUrl` (YouTube embed URL), `mediaType`, `thumbnailUrl`, `slug`; each category has `slug`, `name`, `iconUrl`.
+
+## Technical Notes
+
+- **YouTube:** Custom controls use the [YouTube IFrame API](https://developers.google.com/youtube/iframe_api_reference) (loaded at runtime) for play, pause, seek, and time.
+- **State:** React context in `store/playerStore.tsx` holds current video, category, play state, and mode (`hidden` | `full` | `mini`).
+- **Styling:** Tailwind CSS; mobile-first with a 420px-wide main column.
